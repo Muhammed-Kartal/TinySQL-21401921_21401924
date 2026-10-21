@@ -1,0 +1,3 @@
+*.o
+tinysql
+.DS_Store
