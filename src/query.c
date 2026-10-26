@@ -48,47 +48,61 @@ static void print_results(Table *t, const int *out, int n) {
     if (n > MAX_SHOW) printf("  ... ve %d kayıt daha\n", n - MAX_SHOW);
 }
 
+static double elapsed_since(clock_t start) {
+    return (double)(clock() - start) / CLOCKS_PER_SEC;
+}
+
 void query_exec(Table *t, const Query *q) {
+    static int out[MAX_RECORDS];
     clock_t start = clock();
-    int res, out[MAX_RECORDS];
+    int res;
     Record *r;
 
     switch (q->type) {
         case Q_INSERT:
             res = table_insert(t, q->rec);
+            last_query_time = elapsed_since(start);
             if (res == 0) printf("Kayıt eklendi.\n");
-            else printf("Hata: Kayıt eklenemedi (id mevcut veya kapasite dolu).\n");
+            else if (res == -1) printf("Hata: Bu id zaten mevcut.\n");
+            else printf("Hata: Kapasite dolu.\n");
             break;
         case Q_SELECT_ID:
             r = table_find_by_id(t, q->id);
+            last_query_time = elapsed_since(start);
             if (r) { printf("1 kayıt bulundu.\n"); print_record(r); }
             else printf("Kayıt bulunamadı.\n");
             break;
         case Q_SELECT_GPA_RANGE:
             res = table_range_gpa(t, q->lo, q->hi, out);
+            last_query_time = elapsed_since(start);
             print_results(t, out, res);
             break;
         case Q_SELECT_DEPT:
             res = table_select_dept(t, q->dept, out);
+            last_query_time = elapsed_since(start);
             print_results(t, out, res);
             break;
         case Q_DELETE:
-            if (table_delete(t, q->id) == 0) printf("Kayıt silindi.\n");
+            res = table_delete(t, q->id);
+            last_query_time = elapsed_since(start);
+            if (res == 0) printf("Kayıt silindi.\n");
             else printf("Hata: Kayıt bulunamadı.\n");
-            break;
-        case Q_STATS:
-            table_print_stats(t);
-            printf("Son sorgu süresi: %f s\n", last_query_time);
             break;
         case Q_LOAD:
             res = table_load_csv(t, q->path);
+            last_query_time = elapsed_since(start);
             if (res >= 0) printf("%d kayıt yüklendi.\n", res);
             else printf("Dosya açılamadı.\n");
             break;
+        case Q_STATS:
+            table_print_stats(t);
+            printf("Son sorgu süresi: %.6f s\n", last_query_time);
+            return;
         default:
             printf("Geçersiz veya eksik komut.\n");
+            return;
     }
-    last_query_time = (double)(clock() - start) / CLOCKS_PER_SEC;
+    printf("Süre: %.6f s\n", last_query_time);
 }
 
 void repl(Table *t) {
