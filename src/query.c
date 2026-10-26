@@ -36,6 +36,18 @@ void query_parse(const char *line, Query *q) {
     }
 }
 
+#define MAX_SHOW 10
+
+static void print_record(const Record *r) {
+    printf("  %d | %s | %s | %.2f | %d\n", r->id, r->name, r->dept, r->gpa, r->year);
+}
+
+static void print_results(Table *t, const int *out, int n) {
+    printf("%d kayıt bulundu.\n", n);
+    for (int i = 0; i < n && i < MAX_SHOW; i++) print_record(table_find_by_id(t, out[i]));
+    if (n > MAX_SHOW) printf("  ... ve %d kayıt daha\n", n - MAX_SHOW);
+}
+
 void query_exec(Table *t, const Query *q) {
     clock_t start = clock();
     int res, out[MAX_RECORDS];
@@ -49,16 +61,16 @@ void query_exec(Table *t, const Query *q) {
             break;
         case Q_SELECT_ID:
             r = table_find_by_id(t, q->id);
-            if (r) printf("Bulundu: %d, %s, %s, %.2f, %d\n", r->id, r->name, r->dept, r->gpa, r->year);
+            if (r) { printf("1 kayıt bulundu.\n"); print_record(r); }
             else printf("Kayıt bulunamadı.\n");
             break;
         case Q_SELECT_GPA_RANGE:
             res = table_range_gpa(t, q->lo, q->hi, out);
-            printf("%d kayıt bulundu.\n", res);
+            print_results(t, out, res);
             break;
         case Q_SELECT_DEPT:
             res = table_select_dept(t, q->dept, out);
-            printf("%d kayıt bulundu.\n", res);
+            print_results(t, out, res);
             break;
         case Q_DELETE:
             if (table_delete(t, q->id) == 0) printf("Kayıt silindi.\n");
