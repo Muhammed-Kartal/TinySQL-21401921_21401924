@@ -110,9 +110,9 @@ AVLNode* avl_delete(AVLNode *root, float key, int id) {
 
 void avl_range(AVLNode *root, float lo, float hi, int *out, int *cnt) {
     if (!root) return;
-    if (root->key > lo) avl_range(root->left, lo, hi, out, cnt);
+    if (root->key >= lo) avl_range(root->left, lo, hi, out, cnt);
     if (root->key >= lo && root->key <= hi) out[(*cnt)++] = root->id;
-    if (root->key < hi) avl_range(root->right, lo, hi, out, cnt);
+    if (root->key <= hi) avl_range(root->right, lo, hi, out, cnt);
 }
 
 int avl_height(const AVLNode *root) { return root ? root->height : 0; }

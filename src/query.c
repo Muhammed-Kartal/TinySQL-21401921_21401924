@@ -19,7 +19,7 @@ void query_parse(const char *line, Query *q) {
         char field[32];
         sscanf(line, "SELECT %31s", field);
         if (strcmp(field, "id") == 0) {
-            if (sscanf(line, "SELECT id %d", &q->id) == 1) q->type = Q_SELECT_ID;
+            if (sscanf(line, "SELECT id = %d", &q->id) == 1) q->type = Q_SELECT_ID;
         } else if (strcmp(field, "gpa") == 0) {
             if (sscanf(line, "SELECT gpa BETWEEN %f %f", &q->lo, &q->hi) == 2) q->type = Q_SELECT_GPA_RANGE;
         } else if (strcmp(field, "dept") == 0) {
@@ -89,7 +89,7 @@ void repl(Table *t) {
         query_parse(line, &q);
         if (q.type == Q_EXIT) break;
         if (q.type == Q_ERROR) {
-            printf("Sözdizimi hatası. (Örn: SELECT id 1042, LOAD data/students.csv)\n");
+            printf("Sözdizimi hatası. (Örn: SELECT id = 1042, LOAD data/students.csv)\n");
             continue;
         }
         query_exec(t, &q);
