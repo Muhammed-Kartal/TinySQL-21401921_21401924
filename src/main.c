@@ -5,7 +5,7 @@
 int main(void) {
     Table *t = table_create();
     if (t == NULL) {
-        fprintf(stderr, "Tablo olusturulamadi\n");
+        fprintf(stderr, "Tablo oluşturulamadı\n");
         return 1;
     }
     repl(t);

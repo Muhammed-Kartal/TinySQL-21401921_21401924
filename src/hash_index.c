@@ -67,8 +67,10 @@ int hash_update(HashIndex *hi, int id, int new_slot) {
 }
 
 void hash_print_stats(const HashIndex *hi) {
-    printf("Hash Yük Faktörü: %.2f\n", (float)hi->count / TABLE_SIZE);
-    printf("Hash Çakışmaları: %d\n", hi->collisions);
+    int filled = 0;
+    for (int i = 0; i < TABLE_SIZE; i++) if (hi->buckets[i] != NULL) filled++;
+    printf("Hash yük faktörü   : %.2f  |  Dolu kova oranı: %.2f  |  Çakışmalar: %d\n",
+           (double)hi->count / TABLE_SIZE, (double)filled / TABLE_SIZE, hi->collisions);
 }
 
 void hash_destroy(HashIndex *hi) {

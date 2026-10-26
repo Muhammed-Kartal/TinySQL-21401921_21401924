@@ -49,5 +49,5 @@ void heap_load_csv(HeapFile *hf, const char *path) {
 
 
 void heap_print_stats(const HeapFile *hf) {
-    printf("Heap Kapasitesi: %d / %d\n", hf->count, MAX_RECORDS);
+    printf("Toplam kayıt       : %d / %d\n", hf->count, MAX_RECORDS);
 }

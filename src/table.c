@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 Table* table_create(void) {
     Table *t = malloc(sizeof(Table));
@@ -84,9 +85,12 @@ int table_load_csv(Table *t, const char *path) {
     return added;
 }
 
-void table_print_stats(const Table *t) {
-    printf("=== TinySQL İstatistikleri ===\n");
-    heap_print_stats(&t->heap);
-    hash_print_stats(&t->hidx);
-    printf("AVL Yüksekliği: %d\n", avl_height(t->avl_gpa.root));
-}
+  void table_print_stats(const Table *t) {
+      int n = t->heap.count;
+      printf("=== TinySQL İstatistikleri ===\n");
+      heap_print_stats(&t->heap);
+      hash_print_stats(&t->hidx);
+      printf("AVL yüksekliği     : %d", avl_height(t->avl_gpa.root));
+      if (n > 0) printf("  |  Teorik üst sınır: %d", (int)floor(1.44 * log2(n)));
+      printf("\n");
+  }

@@ -28,6 +28,8 @@ Linux'ta bellek sızıntısı kontrolü için `valgrind ./tinysql` da kullanıla
 - Table yaklaşık 10 MB olduğu için `table_create` ile `malloc` üzerinden ayrılır, stack'te tutulmaz.
 - Stub'lar başarısızlık değeri döndürür (–1 veya NULL). Yazılmamış bir fonksiyon asla başarılı görünmemelidir.
 - Bir dosya neye ihtiyaç duyuyorsa onu kendisi include eder. Standart başlıklar `.h` dosyalarına değil, ihtiyaç duyan `.c` dosyalarına eklenir.
+- Kullanıcıya görünen tüm çıktılar (printf) Türkçe yazılır. Kod içindeki isimler (fonksiyon, değişken, struct) İngilizcedir.
+- Big-O yorum satırları kod tamamlandıktan sonra, en son eklenecek. Değerler ödevdeki tablolardan alınır.
 
 ### Hash
 - `TABLE_SIZE = 20011` (asal). Ödevin önerdiği 10007 ile 10.000 kayıtta yük faktörü ≈ 1.0 olur ve α ≤ 0.7 şartı sağlanmaz. Kapasite ≥ n / 0.7 olmalıdır. 20011 ile 14.000 kayda kadar α < 0.7 kalır. Rehash yerine bu yol seçildi çünkü ödevdeki sabit boyutlu `buckets` dizisi korunuyor.

@@ -96,7 +96,7 @@ void query_exec(Table *t, const Query *q) {
             break;
         case Q_STATS:
             table_print_stats(t);
-            printf("Son sorgu süresi: %.6f s\n", last_query_time);
+            printf("Son sorgu süresi   : %.6f s\n", last_query_time);
             return;
         default:
             printf("Geçersiz veya eksik komut.\n");
@@ -112,6 +112,8 @@ void repl(Table *t) {
     while (1) {
         printf("tinysql> ");
         if (!fgets(line, sizeof(line), stdin)) break;
+        char first[2];
+        if (sscanf(line, "%1s", first) != 1) continue;
         query_parse(line, &q);
         if (q.type == Q_EXIT) break;
         if (q.type == Q_ERROR) {
