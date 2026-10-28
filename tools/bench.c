@@ -188,9 +188,47 @@ static void table4(void) {
         Table *t = build_table(recs, n);
         int k_avl = table_range_gpa(t, RANGE_LO, RANGE_HI, range_out);
         int k_lin = linear_range(t);
-        double a = ns_per_op(run_avl_range, t, NULL, 1) / 1000.0;
-        double l = ns_per_op(run_linear_range, t, NULL, 1) / 1000.0;
+        double a = ns_per_op(run_avl_range, t, NULL, NUM_QUERIES) / 1000.0;
+        double l = ns_per_op(run_linear_range, t, NULL, NUM_QUERIES) / 1000.0;
         printf("| %d | %d | %d | %.3f | %.3f | %.1fx |\n", n, k_avl, k_lin, a, l, l / a);
+        table_destroy(t);
+        free(recs);
+    }
+    printf("\n");
+}
+
+#define UNIQUE_ID 100500
+#define UNIQUE_DEPT "Felsefe"
+
+static void run_select_id(Table *t, const int *ids, int k) {
+    (void)ids;
+    for (int i = 0; i < k; i++) sink += table_find_by_id(t, UNIQUE_ID) != NULL;
+}
+
+static void run_select_dept(Table *t, const int *ids, int k) {
+    (void)ids;
+    for (int i = 0; i < k; i++) sink += table_select_dept(t, UNIQUE_DEPT, range_out);
+}
+
+static void table5(void) {
+    int sizes[] = {100, 1000, 10000};
+    Record u = {UNIQUE_ID, "Tek Kayit", UNIQUE_DEPT, 2.50f, 1};
+    printf("## Tablo 5: Aynı sonucu veren SELECT id ve SELECT dept (Test senaryosu, madde 12)\n\n");
+    printf("Tabloya bölümü \"%s\" olan tek bir kayıt (id = %d) eklenmiştir. ", UNIQUE_DEPT, UNIQUE_ID);
+    printf("Böylece SELECT id = %d ve SELECT dept = \"%s\" aynı tek kaydı döndürür.\n\n", UNIQUE_ID, UNIQUE_DEPT);
+    printf("| n | SELECT id sonucu | SELECT dept sonucu | SELECT id, hash (ns) | SELECT dept, tarama (ns) | Fark |\n");
+    printf("|---:|:---:|:---:|---:|---:|---:|\n");
+    for (int s = 0; s < 3; s++) {
+        int n = sizes[s];
+        Record *recs = make_records(n);
+        Table *t = build_table(recs, n);
+        table_insert(t, u);
+        Record *r = table_find_by_id(t, UNIQUE_ID);
+        int cnt = table_select_dept(t, UNIQUE_DEPT, range_out);
+        double a = ns_per_op(run_select_id, t, NULL, NUM_QUERIES);
+        double b = ns_per_op(run_select_dept, t, NULL, NUM_QUERIES);
+        printf("| %d | id %d | %d kayıt (id %d) | %.1f | %.1f | %.0fx |\n",
+               n + 1, r ? r->id : -1, cnt, cnt > 0 ? range_out[0] : -1, a, b, b / a);
         table_destroy(t);
         free(recs);
     }
@@ -203,5 +241,6 @@ int main(void) {
     table2();
     table3();
     table4();
+    table5();
     return 0;
 }
