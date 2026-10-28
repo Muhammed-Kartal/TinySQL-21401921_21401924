@@ -3,6 +3,7 @@ CFLAGS = -Wall -Wextra -std=c99 -O2
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
 TARGET = tinysql
+BENCH_OBJ = $(filter-out src/main.o,$(OBJ))
 
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(OBJ) -lm
@@ -19,7 +20,14 @@ data: tools/gen_csv
 tools/gen_csv: tools/gen_csv.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-clean:
-	rm -f src/*.o $(TARGET) tools/gen_csv
+bench: tools/bench
+	./tools/bench > report/olcumler.md
+	cat report/olcumler.md
 
-.PHONY: clean debug data
+tools/bench: tools/bench.c $(BENCH_OBJ) src/*.h
+	$(CC) $(CFLAGS) -Isrc -o $@ tools/bench.c $(BENCH_OBJ) -lm
+
+clean:
+	rm -f src/*.o $(TARGET) tools/gen_csv tools/bench
+
+.PHONY: clean debug data bench
