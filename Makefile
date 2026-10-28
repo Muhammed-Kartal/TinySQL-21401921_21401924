@@ -13,7 +13,13 @@ src/%.o: src/%.c src/*.h
 debug: CFLAGS = -Wall -Wextra -std=c99 -g -fsanitize=address
 debug: clean $(TARGET)
 
-clean:
-	rm -f src/*.o $(TARGET)
+data: tools/gen_csv
+	./tools/gen_csv 10000 data/students.csv
 
-.PHONY: clean debug
+tools/gen_csv: tools/gen_csv.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+clean:
+	rm -f src/*.o $(TARGET) tools/gen_csv
+
+.PHONY: clean debug data

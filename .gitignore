@@ -1,3 +1,4 @@
 *.o
 tinysql
 .DS_Store
+tools/gen_csv
