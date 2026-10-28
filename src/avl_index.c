@@ -117,17 +117,22 @@ void avl_range(AVLNode *root, float lo, float hi, int *out, int *cnt) {
 
 int avl_height(const AVLNode *root) { return root ? root->height : 0; }
 
-static int verify_helper(const AVLNode *n) {
+static int verify_helper(const AVLNode *n, const AVLNode **prev) {
     if (!n) return 0;
-    int errs = 0;
-    int bal = get_balance((AVLNode*)n);
-    if (bal > 1 || bal < -1) errs++;
-    errs += verify_helper(n->left) + verify_helper(n->right);
-    return errs;
+    int errs = verify_helper(n->left, prev);
+    int hl = n->left ? n->left->height : 0;
+    int hr = n->right ? n->right->height : 0;
+    if (hl - hr > 1 || hr - hl > 1) errs++;
+    if (n->height != 1 + (hl > hr ? hl : hr)) errs++;
+    if (*prev && compare((*prev)->key, (*prev)->id, n->key, n->id) >= 0) errs++;
+    *prev = n;
+    return errs + verify_helper(n->right, prev);
 }
 
-
-int avl_verify(const AVLNode *root) { return verify_helper(root); }
+int avl_verify(const AVLNode *root) {
+    const AVLNode *prev = NULL;
+    return verify_helper(root, &prev);
+}
 
 void avl_destroy(AVLNode *root) {
     if (!root) return;

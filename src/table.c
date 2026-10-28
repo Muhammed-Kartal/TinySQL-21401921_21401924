@@ -93,4 +93,5 @@ int table_load_csv(Table *t, const char *path) {
       printf("AVL yüksekliği     : %d", avl_height(t->avl_gpa.root));
       if (n > 0) printf("  |  Teorik üst sınır: %d", (int)floor(1.44 * log2(n)));
       printf("\n");
+      printf("AVL doğrulama      : %d hata\n", avl_verify(t->avl_gpa.root));
   }

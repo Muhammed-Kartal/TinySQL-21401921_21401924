@@ -55,7 +55,7 @@ Linux'ta bellek sızıntısı kontrolü için `valgrind ./tinysql` da kullanıla
 - Anahtar (gpa, id) çiftidir: önce GPA, eşitse id karşılaştırılır. Her düğüm benzersizdir, `avl_delete(key, id)` tam olarak tek bir düğümü hedefler.
 - Yükseklik: NULL = 0, yaprak = 1. Doğrulama sınırı ⌊1.44 · log₂(n)⌋.
 - `avl_insert` ve `avl_delete` yeni kökü döndürür. `AVLIndex.count` sayacını Table günceller.
-- `avl_verify` (ödevde void) int döndürür: bulduğu hata sayısı. Stub –1 döndürür ("henüz doğrulanamadı").
+- `avl_verify` (ödevde void) int döndürür: bulduğu hata sayısı. Her düğümde üç şart denetlenir: denge (|sol − sağ| ≤ 1), `height` alanının doğruluğu ve in-order sıralamanın (gpa, id) çiftine göre kesin artan olması. Sonuç STATS çıktısında "AVL doğrulama" satırında görünür.
 - `avl_range`: çağıran `*cnt = 0` yapar ve yeterli boyutta `out` ayırır. Fonksiyon sonuçları sona ekler.
 - `avl_destroy` ve `hash_destroy`: bellek sızıntısı kontrolü için eklendi.
 
