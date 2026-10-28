@@ -92,8 +92,49 @@ static void table1(void) {
     printf("\n");
 }
 
+static void chain_stats(const HashIndex *hi, int *filled, int *longest, double *avg_cmp) {
+    long total = 0;
+    *filled = 0;
+    *longest = 0;
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        int len = 0;
+        for (const HNode *nd = hi->buckets[i]; nd != NULL; nd = nd->next) len++;
+        if (len > 0) (*filled)++;
+        if (len > *longest) *longest = len;
+        total += (long)len * (len + 1) / 2;
+    }
+    *avg_cmp = hi->count > 0 ? (double)total / hi->count : 0.0;
+}
+
+static void table2(void) {
+    int sizes[] = {5000, 10000, 14000, 20000, 40000, 80000};
+    int ids[NUM_QUERIES];
+    printf("## Tablo 2: Yük faktörünün aramaya etkisi (Kabul 6)\n\n");
+    printf("Kova sayısı sabit (TABLE_SIZE = %d), kayıt sayısı artırılarak α değiştirilmiştir. ", TABLE_SIZE);
+    printf("Başarılı aramada beklenen karşılaştırma sayısı teoride 1 + α/2'dir.\n\n");
+    printf("| n | α | Dolu kova oranı | En uzun zincir | Ort. karşılaştırma (ölçülen) | Ort. karşılaştırma (teori) | Hash araması (ns) |\n");
+    printf("|---:|---:|---:|---:|---:|---:|---:|\n");
+    for (int s = 0; s < 6; s++) {
+        int n = sizes[s];
+        Record *recs = make_records(n);
+        Table *t = build_table(recs, n);
+        pick_ids(recs, n, ids, NUM_QUERIES);
+        int filled, longest;
+        double avg_cmp;
+        chain_stats(&t->hidx, &filled, &longest, &avg_cmp);
+        double alpha = (double)n / TABLE_SIZE;
+        double x = ns_per_op(run_hash, t, ids, NUM_QUERIES);
+        printf("| %d | %.2f | %.2f | %d | %.3f | %.3f | %.1f |\n",
+               n, alpha, (double)filled / TABLE_SIZE, longest, avg_cmp, 1.0 + alpha / 2.0, x);
+        table_destroy(t);
+        free(recs);
+    }
+    printf("\n");
+}
+
 int main(void) {
     printf("# TinySQL Ölçüm Sonuçları\n\n");
     table1();
+    table2();
     return 0;
 }
