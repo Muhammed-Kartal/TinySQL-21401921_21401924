@@ -8,6 +8,7 @@ static double last_query_time = 0.0;
 void query_parse(const char *line, Query *q) {
     char cmd[32];
     q->type = Q_ERROR;
+    while (*line == ' ' || *line == '\t') line++;
     if (sscanf(line, "%31s", cmd) != 1) return;
 
     if (strcmp(cmd, "INSERT") == 0) {
