@@ -21,5 +21,6 @@ typedef struct {
 void query_parse(const char *line, Query *q);
 void query_exec(Table *t, const Query *q);
 void repl(Table *t);
+void repl_set_echo(int on);
 
 #endif

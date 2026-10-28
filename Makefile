@@ -27,7 +27,11 @@ bench: tools/bench
 tools/bench: tools/bench.c $(BENCH_OBJ) src/*.h
 	$(CC) $(CFLAGS) -Isrc -o $@ tools/bench.c $(BENCH_OBJ) -lm
 
+demo: $(TARGET)
+	./$(TARGET) --echo < data/demo.sql > report/repl_cikti.txt
+	cat report/repl_cikti.txt
+
 clean:
 	rm -f src/*.o $(TARGET) tools/gen_csv tools/bench
 
-.PHONY: clean debug data bench
+.PHONY: clean debug data bench demo

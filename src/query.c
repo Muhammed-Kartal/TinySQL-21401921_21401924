@@ -5,6 +5,12 @@
 
 static double last_query_time = 0.0;
 
+static int echo_input = 0;
+
+void repl_set_echo(int on) {
+    echo_input = on;
+}
+
 void query_parse(const char *line, Query *q) {
     char cmd[32];
     q->type = Q_ERROR;
@@ -113,6 +119,10 @@ void repl(Table *t) {
     while (1) {
         printf("tinysql> ");
         if (!fgets(line, sizeof(line), stdin)) break;
+        if (echo_input) {
+            printf("%s", line);
+            if (strchr(line, '\n') == NULL) printf("\n");
+        }
         char first[2];
         if (sscanf(line, "%1s", first) != 1) continue;
         query_parse(line, &q);
