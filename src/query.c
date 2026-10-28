@@ -12,19 +12,19 @@ void query_parse(const char *line, Query *q) {
     if (sscanf(line, "%31s", cmd) != 1) return;
 
     if (strcmp(cmd, "INSERT") == 0) {
-        if (sscanf(line, "INSERT %d \"%[^\"]\" \"%[^\"]\" %f %d", 
+        if (sscanf(line, "INSERT %d \"%63[^\"]\" \"%31[^\"]\" %f %d", 
             &q->rec.id, q->rec.name, q->rec.dept, &q->rec.gpa, &q->rec.year) == 5) {
             q->type = Q_INSERT;
         }
     } else if (strcmp(cmd, "SELECT") == 0) {
         char field[32];
-        sscanf(line, "SELECT %31s", field);
+        if (sscanf(line, "SELECT %31s", field) != 1) return;
         if (strcmp(field, "id") == 0) {
             if (sscanf(line, "SELECT id = %d", &q->id) == 1) q->type = Q_SELECT_ID;
         } else if (strcmp(field, "gpa") == 0) {
             if (sscanf(line, "SELECT gpa BETWEEN %f %f", &q->lo, &q->hi) == 2) q->type = Q_SELECT_GPA_RANGE;
         } else if (strcmp(field, "dept") == 0) {
-            if (sscanf(line, "SELECT dept = \"%[^\"]\"", q->dept) == 1) q->type = Q_SELECT_DEPT;
+            if (sscanf(line, "SELECT dept = \"%31[^\"]\"", q->dept) == 1) q->type = Q_SELECT_DEPT;
         }
     } else if (strcmp(cmd, "DELETE") == 0) {
         if (sscanf(line, "DELETE %d", &q->id) == 1) q->type = Q_DELETE;

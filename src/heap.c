@@ -40,7 +40,7 @@ void heap_load_csv(HeapFile *hf, const char *path) {
     char line[256];
     while (fgets(line, sizeof(line), f)) {
         Record r;
-        if (sscanf(line, "%d,%[^,],%[^,],%f,%d", &r.id, r.name, r.dept, &r.gpa, &r.year) == 5) {
+        if (sscanf(line, "%d,%63[^,],%31[^,],%f,%d", &r.id, r.name, r.dept, &r.gpa, &r.year) == 5) {
             heap_insert(hf, r);
         }
     }

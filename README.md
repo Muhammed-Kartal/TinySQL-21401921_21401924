@@ -30,6 +30,7 @@ Linux'ta bellek sızıntısı kontrolü için `valgrind ./tinysql` da kullanıla
 - Bir dosya neye ihtiyaç duyuyorsa onu kendisi include eder. Standart başlıklar `.h` dosyalarına değil, ihtiyaç duyan `.c` dosyalarına eklenir.
 - Kullanıcıya görünen tüm çıktılar (printf) Türkçe yazılır. Kod içindeki isimler (fonksiyon, değişken, struct) İngilizcedir.
 - Big-O yorum satırları kod tamamlandıktan sonra, en son eklenecek. Değerler ödevdeki tablolardan alınır.
+- `sscanf` biçimlerinde metin alanları sınırlıdır: isim için `%63`, bölüm için `%31` (`MAX_NAME - 1`, `MAX_DEPT - 1`). `MAX_NAME` veya `MAX_DEPT` değişirse bu sayılar da `query.c`, `table.c` ve `heap.c` içinde güncellenmelidir.
 
 ### Hash
 - `TABLE_SIZE = 20011` (asal). Ödevin önerdiği 10007 ile 10.000 kayıtta yük faktörü ≈ 1.0 olur ve α ≤ 0.7 şartı sağlanmaz. Kapasite ≥ n / 0.7 olmalıdır. 20011 ile 14.000 kayda kadar α < 0.7 kalır. Rehash yerine bu yol seçildi çünkü ödevdeki sabit boyutlu `buckets` dizisi korunuyor.

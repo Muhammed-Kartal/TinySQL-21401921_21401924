@@ -77,7 +77,7 @@ int table_load_csv(Table *t, const char *path) {
     int added = 0;
     while (fgets(line, sizeof(line), f)) {
         Record r;
-        if (sscanf(line, "%d,%[^,],%[^,],%f,%d", &r.id, r.name, r.dept, &r.gpa, &r.year) == 5) {
+        if (sscanf(line, "%d,%63[^,],%31[^,],%f,%d", &r.id, r.name, r.dept, &r.gpa, &r.year) == 5) {
             if (table_insert(t, r) == 0) added++;
         }
     }
