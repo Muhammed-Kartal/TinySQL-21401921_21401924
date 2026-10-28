@@ -74,7 +74,7 @@ static double ns_per_op(void (*fn)(Table *, const int *, int), Table *t, const i
 static void table1(void) {
     int sizes[] = {100, 1000, 10000};
     int ids[NUM_QUERIES];
-    printf("## Tablo 1: Nokta sorgusu (Kabul 1-5)\n\n");
+    printf("## Tablo 1: Nokta sorgusu (Test senaryosu, madde 1-5)\n\n");
     printf("%d rastgele mevcut id aranmıştır; süreler işlem başına ortalamadır.\n\n", NUM_QUERIES);
     printf("| n | Heap araması O(n) (ns) | Hash araması O(1) (ns) | Hızlanma |\n");
     printf("|---:|---:|---:|---:|\n");
@@ -109,9 +109,10 @@ static void chain_stats(const HashIndex *hi, int *filled, int *longest, double *
 static void table2(void) {
     int sizes[] = {5000, 10000, 14000, 20000, 40000, 80000};
     int ids[NUM_QUERIES];
-    printf("## Tablo 2: Yük faktörünün aramaya etkisi (Kabul 6)\n\n");
+    printf("## Tablo 2: Yük faktörünün aramaya etkisi (Test senaryosu, madde 6)\n\n");
     printf("Kova sayısı sabit (TABLE_SIZE = %d), kayıt sayısı artırılarak α değiştirilmiştir. ", TABLE_SIZE);
-    printf("Başarılı aramada beklenen karşılaştırma sayısı teoride 1 + α/2'dir.\n\n");
+    printf("Başarılı aramada beklenen karşılaştırma sayısı teoride 1 + α/2'dir. ");
+    printf("n = 10000 satırı madde 6'nın istediği değerdir; diğer satırlar etkiyi yorumlamak için yapılan ek ölçümdür.\n\n");
     printf("| n | α | Dolu kova oranı | En uzun zincir | Ort. karşılaştırma (ölçülen) | Ort. karşılaştırma (teori) | Hash araması (ns) |\n");
     printf("|---:|---:|---:|---:|---:|---:|---:|\n");
     for (int s = 0; s < 6; s++) {
@@ -132,9 +133,75 @@ static void table2(void) {
     printf("\n");
 }
 
+static void table3(void) {
+    int sizes[] = {100, 1000, 10000};
+    printf("## Tablo 3: AVL yüksekliği ve doğrulama (Test senaryosu, madde 7 ve 9)\n\n");
+    printf("| n | AVL yüksekliği | Teorik üst sınır ⌊1.44·log₂n⌋ | Sınır içinde | avl_verify hata sayısı |\n");
+    printf("|---:|---:|---:|:---:|---:|\n");
+    for (int s = 0; s < 3; s++) {
+        int n = sizes[s];
+        Record *recs = make_records(n);
+        Table *t = build_table(recs, n);
+        int h = avl_height(t->avl_gpa.root);
+        int bound = (int)floor(1.44 * log2(n));
+        printf("| %d | %d | %d | %s | %d |\n", n, h, bound, h <= bound ? "evet" : "hayır",
+               avl_verify(t->avl_gpa.root));
+        table_destroy(t);
+        free(recs);
+    }
+    printf("\n");
+}
+
+#define RANGE_LO 3.0f
+#define RANGE_HI 3.5f
+
+static int range_out[MAX_RECORDS];
+
+static int linear_range(Table *t) {
+    int cnt = 0;
+    for (int i = 0; i < t->heap.count; i++) {
+        float g = t->heap.records[i].gpa;
+        if (g >= RANGE_LO && g <= RANGE_HI) range_out[cnt++] = t->heap.records[i].id;
+    }
+    return cnt;
+}
+
+static void run_avl_range(Table *t, const int *ids, int k) {
+    (void)ids;
+    for (int i = 0; i < k; i++) sink += table_range_gpa(t, RANGE_LO, RANGE_HI, range_out);
+}
+
+static void run_linear_range(Table *t, const int *ids, int k) {
+    (void)ids;
+    for (int i = 0; i < k; i++) sink += linear_range(t);
+}
+
+static void table4(void) {
+    int sizes[] = {100, 1000, 10000};
+    printf("## Tablo 4: Aralık sorgusu GPA ∈ [3.0, 3.5] (Test senaryosu, madde 8)\n\n");
+    printf("Süreler sorgu başına ortalamadır. k: bulunan kayıt sayısı.\n\n");
+    printf("| n | k (AVL) | k (doğrusal) | AVL O(log n + k) (µs) | Doğrusal tarama O(n) (µs) | Hızlanma |\n");
+    printf("|---:|---:|---:|---:|---:|---:|\n");
+    for (int s = 0; s < 3; s++) {
+        int n = sizes[s];
+        Record *recs = make_records(n);
+        Table *t = build_table(recs, n);
+        int k_avl = table_range_gpa(t, RANGE_LO, RANGE_HI, range_out);
+        int k_lin = linear_range(t);
+        double a = ns_per_op(run_avl_range, t, NULL, 1) / 1000.0;
+        double l = ns_per_op(run_linear_range, t, NULL, 1) / 1000.0;
+        printf("| %d | %d | %d | %.3f | %.3f | %.1fx |\n", n, k_avl, k_lin, a, l, l / a);
+        table_destroy(t);
+        free(recs);
+    }
+    printf("\n");
+}
+
 int main(void) {
     printf("# TinySQL Ölçüm Sonuçları\n\n");
     table1();
     table2();
+    table3();
+    table4();
     return 0;
 }
