@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 
+/* complexity: O(1) */
 Table* table_create(void) {
     Table *t = malloc(sizeof(Table));
     if (!t) return NULL;
@@ -13,13 +14,13 @@ Table* table_create(void) {
     t->avl_gpa.count = 0;
     return t;
 }
-
+/* complexity: O(n)) */
 void table_destroy(Table *t) {
     hash_destroy(&t->hidx);
     avl_destroy(t->avl_gpa.root);
     free(t);
 }
-
+/* complexity: O(logn) */
 int table_insert(Table *t, Record r) {
     if (t->heap.count >= MAX_RECORDS) return -2;
     if (hash_lookup(&t->hidx, r.id) != -1) return -1;
@@ -31,6 +32,7 @@ int table_insert(Table *t, Record r) {
     return 0;
 }
 
+/* complexity: O(logn) */
 int table_delete(Table *t, int id) {
     int slot = hash_lookup(&t->hidx, id);
     if (slot == -1) return -1;
@@ -48,18 +50,20 @@ int table_delete(Table *t, int id) {
     return 0;
 }
 
+/* complexity: O(1) ortalama*/
 Record* table_find_by_id(Table *t, int id) {
     int slot = hash_lookup(&t->hidx, id);
     if (slot != -1) return &t->heap.records[slot];
     return NULL;
 }
-
+/* complexity: O(log(n)+k) */
 int table_range_gpa(Table *t, float lo, float hi, int *out) {
     int cnt = 0;
     avl_range(t->avl_gpa.root, lo, hi, out, &cnt);
     return cnt;
 }
 
+/* complexity: O(n) */
 int table_select_dept(Table *t, const char *dept, int *out) {
     int cnt = 0;
     for (int i = 0; i < t->heap.count; i++) {
@@ -70,6 +74,7 @@ int table_select_dept(Table *t, const char *dept, int *out) {
     return cnt;
 }
 
+/* complexity: O(nlogn) */
 int table_load_csv(Table *t, const char *path) {
     FILE *f = fopen(path, "r");
     if (!f) return -1;
@@ -85,6 +90,7 @@ int table_load_csv(Table *t, const char *path) {
     return added;
 }
 
+/* complexity: O(n) */
   void table_print_stats(const Table *t) {
       int n = t->heap.count;
       printf("=== TinySQL İstatistikleri ===\n");

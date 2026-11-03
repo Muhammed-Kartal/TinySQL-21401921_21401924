@@ -7,10 +7,12 @@ static double last_query_time = 0.0;
 
 static int echo_input = 0;
 
+/* complexity: O(1) */
 void repl_set_echo(int on) {
     echo_input = on;
 }
 
+/* complexity: O(L) (L = line) */
 void query_parse(const char *line, Query *q) {
     char cmd[32];
     q->type = Q_ERROR;
@@ -45,20 +47,24 @@ void query_parse(const char *line, Query *q) {
 
 #define MAX_SHOW 10
 
+/* complexity: O(1) */
 static void print_record(const Record *r) {
     printf("  %d | %s | %s | %.2f | %d\n", r->id, r->name, r->dept, r->gpa, r->year);
 }
 
+/* complexity: O(n) */
 static void print_results(Table *t, const int *out, int n) {
     printf("%d kayıt bulundu.\n", n);
     for (int i = 0; i < n && i < MAX_SHOW; i++) print_record(table_find_by_id(t, out[i]));
     if (n > MAX_SHOW) printf("  ... ve %d kayıt daha\n", n - MAX_SHOW);
 }
 
+/* complexity: O(1) */
 static double elapsed_since(clock_t start) {
     return (double)(clock() - start) / CLOCKS_PER_SEC;
 }
 
+/* complexity: Sorguya gore O(1), O(log n + k) veya O(n) */
 void query_exec(Table *t, const Query *q) {
     static int out[MAX_RECORDS];
     clock_t start = clock();
@@ -112,6 +118,7 @@ void query_exec(Table *t, const Query *q) {
     printf("Süre: %.6f s\n", last_query_time);
 }
 
+/* complexity: dongusel (kullanici cikis yapana kadar) */
 void repl(Table *t) {
     char line[256];
     Query q;

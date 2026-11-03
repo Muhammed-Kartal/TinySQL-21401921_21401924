@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
+/* complexity: O(1) */
 static int hash_fn(int id) {
     unsigned int k = (unsigned int)id;
     k = ((k >> 16) ^ k) * 0x45d9f3b;
@@ -11,13 +11,14 @@ static int hash_fn(int id) {
     return (int)(k % TABLE_SIZE);
 }
 
-
+/* complexity: O(1) */
 void hash_init(HashIndex *hi) {
     for (int i = 0; i < TABLE_SIZE; i++) hi->buckets[i] = NULL;
     hi->count = 0;
     hi->collisions = 0;
 }
 
+/* complexity: O(1) */
 int hash_insert(HashIndex *hi, int id, int slot) {
     if (hash_lookup(hi, id) != -1) return -1; 
     int idx = hash_fn(id);
@@ -31,6 +32,7 @@ int hash_insert(HashIndex *hi, int id, int slot) {
     return 0;
 }
 
+/* complexity: O(1) */
 int hash_lookup(HashIndex *hi, int id) {
     int idx = hash_fn(id);
     for (HNode *n = hi->buckets[idx]; n != NULL; n = n->next) {
@@ -39,6 +41,7 @@ int hash_lookup(HashIndex *hi, int id) {
     return -1;
 }
 
+/* complexity: O(1) */
 int hash_delete(HashIndex *hi, int id) {
     int idx = hash_fn(id);
     HNode *prev = NULL, *curr = hi->buckets[idx];
@@ -55,6 +58,7 @@ int hash_delete(HashIndex *hi, int id) {
     return -1;
 }
 
+/* complexity: O(1) */
 int hash_update(HashIndex *hi, int id, int new_slot) {
     int idx = hash_fn(id);
     for (HNode *n = hi->buckets[idx]; n != NULL; n = n->next) {
@@ -66,6 +70,7 @@ int hash_update(HashIndex *hi, int id, int new_slot) {
     return -1;
 }
 
+/* complexity: O(n) */
 void hash_print_stats(const HashIndex *hi) {
     int filled = 0;
     for (int i = 0; i < TABLE_SIZE; i++) if (hi->buckets[i] != NULL) filled++;
@@ -73,6 +78,7 @@ void hash_print_stats(const HashIndex *hi) {
            (double)hi->count / TABLE_SIZE, (double)filled / TABLE_SIZE, hi->collisions);
 }
 
+/* complexity: O(n) */
 void hash_destroy(HashIndex *hi) {
     for (int i = 0; i < TABLE_SIZE; i++) {
         HNode *curr = hi->buckets[i];

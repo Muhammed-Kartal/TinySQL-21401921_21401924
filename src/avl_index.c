@@ -2,10 +2,16 @@
 #include <stdlib.h>
 #include <math.h>
 
+/* complexity: O(1) */
 static int max(int a, int b) { return a > b ? a : b; }
+
+/* complexity: O(1) */
 static int height(AVLNode *n) { return n ? n->height : 0; }
+
+/* complexity: O(1) */
 static int get_balance(AVLNode *n) { return n ? height(n->left) - height(n->right) : 0; }
 
+/* complexity: O(1) */
 static int compare(float k1, int id1, float k2, int id2) {
     if (k1 < k2) return -1;
     if (k1 > k2) return 1;
@@ -13,7 +19,7 @@ static int compare(float k1, int id1, float k2, int id2) {
     if (id1 > id2) return 1;
     return 0;
 }
-
+/* complexity: O(1) */
 static AVLNode* new_node(float key, int id) {
     AVLNode *n = malloc(sizeof(AVLNode));
     n->key = key; n->id = id;
@@ -21,7 +27,7 @@ static AVLNode* new_node(float key, int id) {
     n->height = 1;
     return n;
 }
-
+/* complexity: O(1) */
 static AVLNode* right_rotate(AVLNode *y) {
     AVLNode *x = y->left;
     AVLNode *T2 = x->right;
@@ -30,7 +36,7 @@ static AVLNode* right_rotate(AVLNode *y) {
     x->height = max(height(x->left), height(x->right)) + 1;
     return x;
 }
-
+/* complexity: O(1) */
 static AVLNode* left_rotate(AVLNode *x) {
     AVLNode *y = x->right;
     AVLNode *T2 = y->left;
@@ -40,7 +46,7 @@ static AVLNode* left_rotate(AVLNode *x) {
     return y;
 }
 
-
+/* complexity: O(logn) */
 AVLNode* avl_insert(AVLNode *node, float key, int id) {
     if (!node) return new_node(key, id);
     
@@ -65,13 +71,14 @@ AVLNode* avl_insert(AVLNode *node, float key, int id) {
     return node;
 }
 
+/* complexity: O(logn) */
 static AVLNode* min_value_node(AVLNode* node) {
     AVLNode* current = node;
     while (current->left != NULL) current = current->left;
     return current;
 }
 
-
+/* complexity: O(logn) */
 AVLNode* avl_delete(AVLNode *root, float key, int id) {
     if (!root) return root;
     int cmp = compare(key, id, root->key, root->id);
@@ -108,6 +115,7 @@ AVLNode* avl_delete(AVLNode *root, float key, int id) {
     return root;
 }
 
+/* complexity: O(logn+k) */
 void avl_range(AVLNode *root, float lo, float hi, int *out, int *cnt) {
     if (!root) return;
     if (root->key >= lo) avl_range(root->left, lo, hi, out, cnt);
@@ -115,8 +123,10 @@ void avl_range(AVLNode *root, float lo, float hi, int *out, int *cnt) {
     if (root->key <= hi) avl_range(root->right, lo, hi, out, cnt);
 }
 
+/* complexity: O(1) */
 int avl_height(const AVLNode *root) { return root ? root->height : 0; }
 
+/* complexity: O(n) */
 static int verify_helper(const AVLNode *n, const AVLNode **prev) {
     if (!n) return 0;
     int errs = verify_helper(n->left, prev);
@@ -129,11 +139,14 @@ static int verify_helper(const AVLNode *n, const AVLNode **prev) {
     return errs + verify_helper(n->right, prev);
 }
 
+
+/* complexity: O(n) */
 int avl_verify(const AVLNode *root) {
     const AVLNode *prev = NULL;
     return verify_helper(root, &prev);
 }
 
+/* complexity: O(n) */
 void avl_destroy(AVLNode *root) {
     if (!root) return;
     avl_destroy(root->left);
