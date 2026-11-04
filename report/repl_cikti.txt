@@ -1,14 +1,14 @@
 TinySQL REPL Başlatıldı.
 tinysql> LOAD data/students.csv
 10000 kayıt yüklendi.
-Süre: 0.004977 s
+Süre: 0.004920 s
 tinysql> STATS
 === TinySQL İstatistikleri ===
 Toplam kayıt       : 10000 / 100000
 Hash yük faktörü   : 0.50  |  Dolu kova oranı: 0.39  |  Çakışmalar: 2110
 AVL yüksekliği     : 16  |  Teorik üst sınır: 19
 AVL doğrulama      : 0 hata
-Son sorgu süresi   : 0.004977 s
+Son sorgu süresi   : 0.004920 s
 tinysql> INSERT 100500 "Aylin Demir" "Felsefe" 3.72 2
 Kayıt eklendi.
 Süre: 0.000001 s
@@ -29,7 +29,7 @@ tinysql> SELECT gpa BETWEEN 3.0 3.5
   36068 | Selin Yıldız | Fizik | 3.00 | 2
   36623 | Mustafa Doğan | Fizik | 3.00 | 2
   ... ve 1264 kayıt daha
-Süre: 0.000010 s
+Süre: 0.000011 s
 tinysql> SELECT dept = "Bilgisayar"
 1939 kayıt bulundu.
   20108 | Mustafa Yılmaz | Bilgisayar | 3.53 | 2
@@ -43,14 +43,14 @@ tinysql> SELECT dept = "Bilgisayar"
   93568 | Ece Yıldız | Bilgisayar | 1.39 | 1
   48484 | Elif Çelik | Bilgisayar | 1.37 | 3
   ... ve 1929 kayıt daha
-Süre: 0.000065 s
+Süre: 0.000070 s
 tinysql> SELECT dept = "Felsefe"
 1 kayıt bulundu.
   100500 | Aylin Demir | Felsefe | 3.72 | 2
-Süre: 0.000028 s
+Süre: 0.000025 s
 tinysql> DELETE 100500
 Kayıt silindi.
-Süre: 0.000007 s
+Süre: 0.000002 s
 tinysql> SELECT id = 100500
 Kayıt bulunamadı.
 Süre: 0.000000 s

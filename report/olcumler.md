@@ -6,9 +6,9 @@
 
 | n | Heap araması O(n) (ns) | Hash araması O(1) (ns) | Hızlanma |
 |---:|---:|---:|---:|
-| 100 | 23.9 | 2.0 | 12x |
-| 1000 | 130.2 | 2.6 | 50x |
-| 10000 | 1432.9 | 3.3 | 434x |
+| 100 | 23.6 | 2.0 | 12x |
+| 1000 | 139.2 | 3.0 | 47x |
+| 10000 | 1613.7 | 3.8 | 427x |
 
 ## Tablo 2: Yük faktörünün aramaya etkisi (Test senaryosu, madde 6)
 
@@ -16,12 +16,12 @@ Kova sayısı sabit (TABLE_SIZE = 20011), kayıt sayısı artırılarak α deği
 
 | n | α | Dolu kova oranı | En uzun zincir | Ort. karşılaştırma (ölçülen) | Ort. karşılaştırma (teori) | Hash araması (ns) |
 |---:|---:|---:|---:|---:|---:|---:|
-| 5000 | 0.25 | 0.22 | 4 | 1.122 | 1.125 | 3.1 |
+| 5000 | 0.25 | 0.22 | 4 | 1.122 | 1.125 | 3.3 |
 | 10000 | 0.50 | 0.39 | 5 | 1.258 | 1.250 | 3.6 |
-| 14000 | 0.70 | 0.50 | 6 | 1.350 | 1.350 | 3.4 |
-| 20000 | 1.00 | 0.64 | 7 | 1.492 | 1.500 | 3.6 |
-| 40000 | 2.00 | 0.87 | 9 | 1.995 | 1.999 | 4.5 |
-| 80000 | 4.00 | 0.98 | 15 | 2.994 | 2.999 | 6.1 |
+| 14000 | 0.70 | 0.50 | 6 | 1.350 | 1.350 | 3.6 |
+| 20000 | 1.00 | 0.64 | 7 | 1.492 | 1.500 | 3.7 |
+| 40000 | 2.00 | 0.87 | 9 | 1.995 | 1.999 | 5.2 |
+| 80000 | 4.00 | 0.98 | 15 | 2.994 | 2.999 | 6.9 |
 
 ## Tablo 3: AVL yüksekliği ve doğrulama (Test senaryosu, madde 7 ve 9)
 
@@ -37,9 +37,9 @@ Süreler sorgu başına ortalamadır. k: bulunan kayıt sayısı.
 
 | n | k (AVL) | k (doğrusal) | AVL O(log n + k) (µs) | Doğrusal tarama O(n) (µs) | Hızlanma |
 |---:|---:|---:|---:|---:|---:|
-| 100 | 16 | 16 | 0.045 | 0.065 | 1.4x |
-| 1000 | 137 | 137 | 0.301 | 0.569 | 1.9x |
-| 10000 | 1215 | 1215 | 3.292 | 19.561 | 5.9x |
+| 100 | 16 | 16 | 0.047 | 0.067 | 1.4x |
+| 1000 | 137 | 137 | 0.303 | 0.581 | 1.9x |
+| 10000 | 1215 | 1215 | 3.340 | 20.017 | 6.0x |
 
 ## Tablo 5: Aynı sonucu veren SELECT id ve SELECT dept (Test senaryosu, madde 12)
 
@@ -47,7 +47,7 @@ Tabloya bölümü "Felsefe" olan tek bir kayıt (id = 100500) eklenmiştir. Böy
 
 | n | SELECT id sonucu | SELECT dept sonucu | SELECT id, hash (ns) | SELECT dept, tarama (ns) | Fark |
 |---:|:---:|:---:|---:|---:|---:|
-| 101 | id 100500 | 1 kayıt (id 100500) | 2.4 | 193.2 | 79x |
-| 1001 | id 100500 | 1 kayıt (id 100500) | 2.5 | 1834.1 | 728x |
-| 10001 | id 100500 | 1 kayıt (id 100500) | 2.4 | 17934.2 | 7363x |
+| 101 | id 100500 | 1 kayıt (id 100500) | 2.5 | 212.3 | 85x |
+| 1001 | id 100500 | 1 kayıt (id 100500) | 2.7 | 1941.8 | 712x |
+| 10001 | id 100500 | 1 kayıt (id 100500) | 2.4 | 18191.8 | 7498x |
 

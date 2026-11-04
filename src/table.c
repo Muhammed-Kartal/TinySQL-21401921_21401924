@@ -14,12 +14,14 @@ Table* table_create(void) {
     t->avl_gpa.count = 0;
     return t;
 }
-/* complexity: O(n)) */
+
+/* complexity: O(n) */
 void table_destroy(Table *t) {
     hash_destroy(&t->hidx);
     avl_destroy(t->avl_gpa.root);
     free(t);
 }
+
 /* complexity: O(logn) */
 int table_insert(Table *t, Record r) {
     if (t->heap.count >= MAX_RECORDS) return -2;
@@ -41,7 +43,7 @@ int table_delete(Table *t, int id) {
     t->avl_gpa.root = avl_delete(t->avl_gpa.root, r.gpa, id);
     t->avl_gpa.count--;
 
-    int freed_slot = heap_delete(&t->heap, id);
+    int freed_slot = heap_delete_slot(&t->heap, slot);
     if (freed_slot < t->heap.count) {
         int moved_id = t->heap.records[freed_slot].id;
         hash_update(&t->hidx, moved_id, freed_slot);

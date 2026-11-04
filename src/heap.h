@@ -10,6 +10,7 @@ typedef struct {
     int count;
 } HeapFile;
 
+int heap_delete_slot(HeapFile *hf, int slot);
 void heap_init(HeapFile *hf);
 int heap_insert(HeapFile *hf, Record r);
 Record* heap_search(HeapFile *hf, int id);

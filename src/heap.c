@@ -33,6 +33,14 @@ int heap_delete(HeapFile *hf, int id) {
     return -1;
 }
 
+/* complexity: O(1) */
+int heap_delete_slot(HeapFile *hf, int slot) {
+    if (slot < 0 || slot >= hf->count) return -1;
+    hf->records[slot] = hf->records[hf->count - 1];
+    hf->count--;
+    return slot;
+}
+
 /* complexity: O(n) */
 void heap_load_csv(HeapFile *hf, const char *path) {
     FILE *f = fopen(path, "r");
