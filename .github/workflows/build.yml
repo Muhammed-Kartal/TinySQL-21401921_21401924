@@ -1,0 +1,30 @@
+name: C/C++ CI - TinySQL
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Repoyu Klonla
+      uses: actions/checkout@v4
+
+    - name: Valgrind Kurulumu
+      run: sudo apt-get update && sudo apt-get install -y valgrind
+
+    - name: Projeyi Derle (make)
+      run: make clean && make
+
+    - name: Benchmark Ölçümlerini Çalıştır (make bench)
+      run: make bench
+
+    - name: REPL Testini Çalıştır (make demo)
+      run: make demo
+
+    - name: Bellek Sızıntısı Kontrolü (Valgrind)
+      run: valgrind --leak-check=full --error-exitcode=1 ./tinysql < data/demo.sql
